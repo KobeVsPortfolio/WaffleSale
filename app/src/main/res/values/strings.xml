@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">WaffleSale</string>
+    <string name="firstNameHint"><i>first name</i></string>
+    <string name="lastNameHint"><i>last name</i></string>
+    <string name="producten"><b>Producten</b></string>
+    <string name="aantal"><b>Aantal</b></string>
+    <string name="totaal"><b>Totaal</b></string>
+    <string name="choco_wafels"><b>Choco Wafels</b></string>
+    <string name="vanille_wafels"><b>Vanille Wafels</b></string>
+    <string name="carre_confituur"><b>Carré Confituur</b></string>
+    <string name="mix"><b>Mix</b></string>
+    <string name="totaalSom"><b>Totaal:</b></string>
+    <string name="bestelformulier"><b>Bestelformulier</b></string>
+    <string name="add_member"><b>Add Member</b></string>
+    <string name="people"><b>People</b></string>
+    <string name="sign_up">Sign up</string>
+    <string name="login">Login</string>
+
+    <string-array name="avatars">
+        <item><i>admin</i></item>
+        <item><i>member</i></item>
+        <item><i>client</i></item>
+    </string-array>
+    <integer-array name="avatar_images">
+        <item>@drawable/admin</item>
+        <item>@drawable/member</item>
+        <item>@drawable/man</item>
+    </integer-array>
+</resources>

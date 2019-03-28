@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorAccent"
+        android:textColor="@color/colorPrimaryDark"
+        android:orientation="vertical"
+        tools:context=".SecondaryActivity">
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bestelformulier"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:textSize="25sp"/>
+    <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                 android:textColor="@color/colorPrimary"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:stretchColumns="1"
+                 android:padding="2dp"
+                 android:layout_margin="20dp">
+        <TableRow android:layout_height="wrap_content">
+            <TextView
+                    android:text=""
+                    android:padding="3dip"
+                    android:gravity="start"/>
+            <TextView
+                    android:text="@string/producten"
+                    android:padding="3dip"
+                    android:gravity="start"/>
+            <TextView
+                    android:text="@string/aantal"
+                    android:gravity="center"
+                    android:padding="3dip"/>
+            <TextView
+                    android:text="@string/totaal"
+                    android:gravity="start"
+                    android:padding="3dip"/>
+        </TableRow>
+        <TableRow android:layout_marginTop="20dp"
+                  android:minHeight="40dp">
+            <CheckBox android:id="@+id/cb_choco"
+                      android:layout_gravity="center_vertical"
+                      android:buttonTint="@color/colorPrimary"/>
+            <TextView
+                    android:text="@string/choco_wafels"
+                    android:layout_gravity="center_vertical"
+                    android:padding="3dip"
+                    android:gravity="start"/>
+            <NumberPicker
+                    android:id="@+id/numberChoco"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"/>
+            <TextView
+                    android:id="@+id/totalChoco"
+                    android:layout_gravity="center_vertical"/>
+        </TableRow>
+        <TableRow android:layout_marginTop="20dp"
+                  android:minHeight="40dp">
+            <CheckBox android:id="@+id/cb_vanille"
+                      android:layout_gravity="center_vertical"
+                      android:buttonTint="@color/colorPrimary"/>
+            <TextView
+                    android:text="@string/vanille_wafels"
+                    android:layout_gravity="center_vertical"
+                    android:padding="3dip"
+                    android:gravity="start"/>
+            <NumberPicker
+                    android:id="@+id/numberVanille"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"/>
+            <TextView
+                    android:id="@+id/totalVanille"
+                    android:layout_gravity="center_vertical"/>
+        </TableRow>
+        <TableRow android:layout_marginTop="20dp"
+                  android:minHeight="40dp">
+            <CheckBox android:id="@+id/cb_carre"
+                      android:layout_gravity="center_vertical"
+                      android:buttonTint="@color/colorPrimary"/>
+            <TextView
+                    android:text="@string/carre_confituur"
+                    android:layout_gravity="center_vertical"
+                    android:padding="3dip"
+                    android:gravity="start"/>
+            <NumberPicker
+                    android:id="@+id/numberCarre"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"/>
+            <TextView
+                    android:id="@+id/totalCarre"
+                    android:layout_gravity="center_vertical"/>
+        </TableRow>
+        <TableRow android:layout_marginTop="20dp"
+                  android:minHeight="40dp">
+            <CheckBox android:id="@+id/cb_mix"
+                      android:layout_gravity="center_vertical"
+                      android:buttonTint="@color/colorPrimary"/>
+            <TextView
+                    android:text="@string/mix"
+                    android:layout_gravity="center_vertical"
+                    android:padding="3dip"
+                    android:gravity="start"/>
+            <NumberPicker
+                    android:id="@+id/numberMix"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"/>
+            <TextView
+                    android:id="@+id/totalMix"
+                    android:layout_gravity="center_vertical"/>
+        </TableRow>
+        <TableRow android:layout_marginTop="20dp"
+                  android:minHeight="40dp">
+            <TextView
+                    android:text=""
+                    android:padding="3dip"
+                    android:gravity="start"/>
+            <TextView
+                    android:text="@string/totaalSom"
+                    android:layout_gravity="center_vertical"
+                    android:padding="3dip"
+                    android:gravity="start"/>
+            <TextView
+                    android:text=""
+                    android:padding="3dip"
+                    android:gravity="start"/>
+            <TextView
+                    android:id="@+id/total"
+                    android:layout_gravity="center_vertical"
+                    android:text=""
+                    android:padding="3dip"/>
+        </TableRow>
+    </TableLayout>
+</LinearLayout>
