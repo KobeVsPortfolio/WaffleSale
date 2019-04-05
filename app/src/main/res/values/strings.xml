@@ -1,29 +1,91 @@
 <resources>
     <string name="app_name">WaffleSale</string>
-    <string name="firstNameHint"><i>first name</i></string>
-    <string name="lastNameHint"><i>last name</i></string>
-    <string name="producten"><b>Producten</b></string>
-    <string name="aantal"><b>Aantal</b></string>
-    <string name="totaal"><b>Totaal</b></string>
-    <string name="choco_wafels"><b>Choco Wafels</b></string>
-    <string name="vanille_wafels"><b>Vanille Wafels</b></string>
-    <string name="carre_confituur"><b>Carré Confituur</b></string>
-    <string name="mix"><b>Mix</b></string>
-    <string name="totaalSom"><b>Totaal:</b></string>
-    <string name="bestelformulier"><b>Bestelformulier</b></string>
-    <string name="add_member"><b>Add Member</b></string>
-    <string name="people"><b>People</b></string>
+    <string name="firstNameHint">
+        <i>first name</i>
+    </string>
+    <string name="lastNameHint">
+        <i>last name</i>
+    </string>
+    <string name="producten">
+        <b>Products</b>
+    </string>
+    <string name="aantal">
+        <b>Amount</b>
+    </string>
+    <string name="totaal">
+        <b>Total</b>
+    </string>
+    <string name="choco_wafels">
+        <b>Choco Waffles</b>
+    </string>
+    <string name="vanille_wafels">
+        <b>Vanille Waffles</b>
+    </string>
+    <string name="carre_confituur">
+        <b>Carré Confituur</b>
+    </string>
+    <string name="mix">
+        <b>Mix</b>
+    </string>
+    <string name="totaalSom">
+        <b>Total:</b>
+    </string>
+    <string name="bestelformulier">
+        <b>Order form for client: </b>
+    </string>
+    <string name="add_member">
+        <b>Add Person</b>
+    </string>
+    <string name="people">
+        <b>People</b>
+    </string>
     <string name="sign_up">Sign up</string>
     <string name="login">Login</string>
+    <string name="city">
+        <b>city</b>
+    </string>
+    <string name="postcode">
+        <b>postal code</b>
+    </string>
+    <string name="street">
+        <b>street</b>
+    </string>
+    <string name="number">
+        <b>number</b>
+    </string>
+    <string name="save">Save</string>
+    <string name="back">Back</string>
+    <string name="password">
+        <b>password</b>
+    </string>
+    <string name="username">
+        <b>username</b>
+    </string>
+    <string name="order">Order</string>
+    <string name="home">Home</string>
+    <string name="account">Account</string>
+    <string name="log_out">Log Out</string>
+    <string name="add_order">Add Order</string>
+    <string name="new_client">
+        <b>New Client</b>
+    </string>
+    <string name="members">
+        <b>Members</b>
+    </string>
+    <string name="orders">
+        <b>Orders</b>
+    </string>
 
     <string-array name="avatars">
-        <item><i>admin</i></item>
-        <item><i>member</i></item>
-        <item><i>client</i></item>
+        <item>
+            <i>MEMBER</i>
+        </item>
+        <item>
+            <i>ADMIN</i>
+        </item>
     </string-array>
     <integer-array name="avatar_images">
-        <item>@drawable/admin</item>
         <item>@drawable/member</item>
-        <item>@drawable/man</item>
+        <item>@drawable/admin</item>
     </integer-array>
 </resources>

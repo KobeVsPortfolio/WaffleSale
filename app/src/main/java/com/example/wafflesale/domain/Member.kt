@@ -3,7 +3,10 @@ package com.example.wafflesale.domain
 import java.io.Serializable
 
 
-class Member(override var firstName: String, override var lastName: String, override val address: Address): Person(firstName, lastName,address), Serializable {
+class Member : Person(), Serializable {
+    override var id: Int? = null
+    override var firstName: String? = null
+    override var lastName: String? = null
     var orders : MutableList<Order> = mutableListOf()
     var imageUrl : Int = 0
 

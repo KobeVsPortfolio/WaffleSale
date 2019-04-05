@@ -1,20 +1,22 @@
 package com.example.wafflesale.domain
 
-class Product(productKind: ProductKind) {
-
-    var productKind = productKind
-    var price = this.productKind.price
+enum class Product(val pName:String,val price: Float,val weight: Int) {
+    CHOCO_WAFFLE("Chocowafels", 6f, 700),
+    VANILLE_WAFFLE( "Vanillewafels", 6f, 700),
+    FRANCHIPAN("Franchipan", 7f, 700),
+    SQUAREJAM("Carré Confituur",7f, 700),
+    MIX("Mix",7f, 800);
 
     fun getProductDescription():String{
-        if(productKind.equals(ProductKind.MIX)){
+        if(pName.equals(MIX)){
             return "Combinatie van Chocolade -en vanillewafels met carré confituur"
         }else{
-            return this.productKind.pName
+            return this.pName
         }
     }
 
     override fun toString(): String {
-        return "product=${productKind.pName} price=$price \n Description=${this.getProductDescription()})"
+        return "product=${pName} price=$price \n Description=${this.getProductDescription()})"
     }
 
 

@@ -8,136 +8,201 @@
         android:background="@color/colorAccent"
         android:textColor="@color/colorPrimaryDark"
         android:orientation="vertical"
-        tools:context=".SecondaryActivity">
-
+        android:fontFamily="@font/baloo_regular"
+        tools:context=".NewOrderActivity">
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical">
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/bestelformulier"
+            android:fontFamily="@font/baloo_regular"
             android:layout_gravity="center"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="15dp"
             android:textSize="25sp"/>
+    <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+            android:id="@+id/searchableSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
     <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
                  android:textColor="@color/colorPrimary"
                  android:layout_width="match_parent"
                  android:layout_height="wrap_content"
                  android:stretchColumns="1"
                  android:padding="2dp"
-                 android:layout_margin="20dp">
+                 android:textSize="20sp"
+                 android:layout_margin="16dp">
         <TableRow android:layout_height="wrap_content">
             <TextView
                     android:text=""
                     android:padding="3dip"
+                    android:fontFamily="@font/baloo_regular"
+                    android:textSize="20sp"
                     android:gravity="start"/>
             <TextView
                     android:text="@string/producten"
                     android:padding="3dip"
+                    android:textSize="20sp"
+                    android:fontFamily="@font/baloo_regular"
                     android:gravity="start"/>
             <TextView
                     android:text="@string/aantal"
                     android:gravity="center"
+                    android:textSize="20sp"
+                    android:fontFamily="@font/baloo_regular"
                     android:padding="3dip"/>
             <TextView
                     android:text="@string/totaal"
                     android:gravity="start"
+                    android:textSize="20sp"
+                    android:fontFamily="@font/baloo_regular"
                     android:padding="3dip"/>
         </TableRow>
-        <TableRow android:layout_marginTop="20dp"
-                  android:minHeight="40dp">
+        <TableRow android:layout_marginTop="16dp"
+                  android:minHeight="60dp">
             <CheckBox android:id="@+id/cb_choco"
                       android:layout_gravity="center_vertical"
                       android:buttonTint="@color/colorPrimary"/>
             <TextView
                     android:text="@string/choco_wafels"
+                    android:textSize="20sp"
                     android:layout_gravity="center_vertical"
+                    android:fontFamily="@font/baloo_regular"
                     android:padding="3dip"
                     android:gravity="start"/>
             <NumberPicker
                     android:id="@+id/numberChoco"
+                    android:scaleX="1.5"
+                    android:scaleY="1.5"
+                    android:theme="@style/AppTheme.Picker"
                     android:layout_gravity="center_vertical"
+                    android:fontFamily="@font/baloo_regular"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"/>
             <TextView
                     android:id="@+id/totalChoco"
+                    android:textSize="20sp"
+                    android:fontFamily="@font/baloo_regular"
                     android:layout_gravity="center_vertical"/>
         </TableRow>
-        <TableRow android:layout_marginTop="20dp"
-                  android:minHeight="40dp">
+        <TableRow android:layout_marginTop="16dp"
+                  android:minHeight="60dp">
             <CheckBox android:id="@+id/cb_vanille"
                       android:layout_gravity="center_vertical"
                       android:buttonTint="@color/colorPrimary"/>
             <TextView
                     android:text="@string/vanille_wafels"
+                    android:textSize="20sp"
                     android:layout_gravity="center_vertical"
+                    android:fontFamily="@font/baloo_regular"
                     android:padding="3dip"
                     android:gravity="start"/>
             <NumberPicker
                     android:id="@+id/numberVanille"
+                    android:scaleX="1.5"
+                    android:scaleY="1.5"
+                    android:theme="@style/AppTheme.Picker"
                     android:layout_gravity="center_vertical"
+                    android:fontFamily="@font/baloo_regular"
+                    android:textSize="20sp"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"/>
             <TextView
                     android:id="@+id/totalVanille"
+                    android:textSize="20sp"
+                    android:fontFamily="@font/baloo_regular"
                     android:layout_gravity="center_vertical"/>
         </TableRow>
-        <TableRow android:layout_marginTop="20dp"
-                  android:minHeight="40dp">
+        <TableRow android:layout_marginTop="16dp"
+                  android:fontFamily="@font/baloo_regular"
+                  android:minHeight="60dp">
             <CheckBox android:id="@+id/cb_carre"
                       android:layout_gravity="center_vertical"
                       android:buttonTint="@color/colorPrimary"/>
             <TextView
                     android:text="@string/carre_confituur"
                     android:layout_gravity="center_vertical"
+                    android:textSize="20sp"
                     android:padding="3dip"
                     android:gravity="start"/>
             <NumberPicker
                     android:id="@+id/numberCarre"
                     android:layout_gravity="center_vertical"
                     android:layout_width="wrap_content"
+                    android:scaleX="1.5"
+                    android:scaleY="1.5"
+                    android:theme="@style/AppTheme.Picker"
+                    android:textSize="20sp"
                     android:layout_height="match_parent"/>
             <TextView
                     android:id="@+id/totalCarre"
+                    android:textSize="20sp"
                     android:layout_gravity="center_vertical"/>
         </TableRow>
-        <TableRow android:layout_marginTop="20dp"
-                  android:minHeight="40dp">
+        <TableRow android:layout_marginTop="16dp"
+                  android:minHeight="60dp">
             <CheckBox android:id="@+id/cb_mix"
                       android:layout_gravity="center_vertical"
                       android:buttonTint="@color/colorPrimary"/>
             <TextView
                     android:text="@string/mix"
                     android:layout_gravity="center_vertical"
+                    android:textSize="20sp"
                     android:padding="3dip"
                     android:gravity="start"/>
             <NumberPicker
                     android:id="@+id/numberMix"
-                    android:layout_gravity="center_vertical"
+                    android:layout_gravity="center"
+                    android:scaleX="1.5"
+                    android:scaleY="1.5"
+                    android:theme="@style/AppTheme.Picker"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"/>
             <TextView
                     android:id="@+id/totalMix"
+                    android:textSize="20sp"
                     android:layout_gravity="center_vertical"/>
         </TableRow>
-        <TableRow android:layout_marginTop="20dp"
+        <TableRow android:layout_marginTop="16dp"
                   android:minHeight="40dp">
             <TextView
                     android:text=""
                     android:padding="3dip"
+                    android:textSize="20sp"
                     android:gravity="start"/>
             <TextView
                     android:text="@string/totaalSom"
                     android:layout_gravity="center_vertical"
+                    android:textSize="20sp"
                     android:padding="3dip"
                     android:gravity="start"/>
             <TextView
                     android:text=""
                     android:padding="3dip"
+                    android:textSize="20sp"
                     android:gravity="start"/>
             <TextView
                     android:id="@+id/total"
                     android:layout_gravity="center_vertical"
+                    android:textSize="20sp"
                     android:text=""
                     android:padding="3dip"/>
         </TableRow>
     </TableLayout>
+    <Button
+            android:text="@string/order"
+            android:layout_width="279dp"
+            android:layout_height="40dp"
+            android:id="@+id/order"
+            android:onClick="order"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/baloo_regular"
+            android:textColor="@color/colorPrimary"
+            android:background="@color/colorPrimaryDark"/>
 </LinearLayout>

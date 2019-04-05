@@ -15,7 +15,7 @@ import com.example.wafflesale.R
 import com.example.wafflesale.domain.Member
 import kotlinx.android.synthetic.main.card_layout.view.*
 
-class MemberListAdapter(private val list:MutableList<Member>, private val context:Context)
+class MemberListAdapter(private val list:ArrayList<Member>?, private val context:Context)
     : RecyclerView.Adapter<MemberListAdapter.ViewHolder>() {
 
     inner class ViewHolder (itemView : View):RecyclerView.ViewHolder(itemView){
@@ -38,11 +38,16 @@ class MemberListAdapter(private val list:MutableList<Member>, private val contex
     }
 
     override fun getItemCount(): Int {
-        return list.size
+        if (list != null) {
+            return list.size
+        }
+        return 0
     }
 
     override fun onBindViewHolder(parent: MemberListAdapter.ViewHolder, position: Int) {
-        parent.bindItem(list[position])
+        if (list != null) {
+            parent.bindItem(list.get(position))
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): MemberListAdapter.ViewHolder {

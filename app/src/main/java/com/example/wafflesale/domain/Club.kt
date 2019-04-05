@@ -1,6 +1,6 @@
 package com.example.wafflesale.domain
 
-class Club(val id : Int, val name: String, val address:Address) {
+class Club(val id : Int, val name: String) {
 
     var members : MutableList<Member> = mutableListOf()
 

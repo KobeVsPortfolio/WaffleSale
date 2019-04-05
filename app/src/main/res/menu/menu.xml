@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:color="@color/colorAccent">
+    <item
+            android:id="@+id/home"
+            android:icon="@drawable/home_white"
+            app:showAsAction="always"
+            android:title="@string/home"/>
+    <item
+            android:id="@+id/account"
+            android:icon="@drawable/account_white"
+            app:showAsAction="always"
+            android:title="@string/account"/>
+    <item
+            android:id="@+id/logout"
+            android:icon="@drawable/logout_white"
+            app:showAsAction="always"
+            android:title="@string/log_out"/>
+</menu>

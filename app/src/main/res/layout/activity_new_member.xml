@@ -6,7 +6,8 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="@color/colorAccent"
-              android:textColor="@color/colorPrimaryDark">
+              android:textColor="@color/colorPrimaryDark"
+              android:fontFamily="@font/baloo_regular">
     <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -19,6 +20,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
+                    android:fontFamily="@font/baloo_regular"
                     android:layout_margin="10dp"
                     android:background="@drawable/layoutstyle">
 
@@ -28,7 +30,7 @@
                         android:textSize="20sp"
                         android:textStyle="bold"
                         android:textColor="@color/colorPrimaryDark"
-                        android:fontFamily="serif"
+                        android:fontFamily="@font/baloo_regular"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/add_member"/>
@@ -38,9 +40,7 @@
                         android:layout_gravity="center"
                         android:layout_height="wrap_content"
                         android:elevation="1dp"
-                        app:cardCornerRadius="20dp"
                         android:innerRadius="0dp"
-                        android:shape="ring"
                         android:thicknessRatio="1.9"
                         android:layout_margin="8dp">
                     <android.support.design.widget.TextInputLayout
@@ -52,7 +52,7 @@
                                 android:textSize="20sp"
                                 android:id="@+id/inputFirstName"
                                 android:padding="8dp"
-                                android:fontFamily="serif"
+                                android:fontFamily="@font/baloo_regular"
                                 android:textColor="@color/colorPrimaryDark"
                                 android:textColorHint="@color/colorPrimaryDark"
                                 android:hint="@string/firstNameHint"
@@ -67,9 +67,7 @@
                         android:layout_gravity="center"
                         android:layout_height="wrap_content"
                         android:elevation="1dp"
-                        app:cardCornerRadius="20dp"
                         android:innerRadius="0dp"
-                        android:shape="ring"
                         android:thicknessRatio="1.9"
                         android:layout_margin="8dp">
                     <android.support.design.widget.TextInputLayout
@@ -87,7 +85,7 @@
                                 android:textColor="@color/colorPrimaryDark"
                                 android:hint="@string/lastNameHint"
                                 android:textColorHint="@color/colorPrimaryDark"
-                                android:fontFamily="serif"
+                                android:fontFamily="@font/baloo_regular"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"/>
                     </android.support.design.widget.TextInputLayout>
@@ -99,16 +97,15 @@
                         android:foregroundGravity="center"
                         android:layout_height="wrap_content"
                         android:elevation="1dp"
-                        app:cardCornerRadius="20dp"
                         android:innerRadius="0dp"
-                        android:shape="ring"
                         android:thicknessRatio="1.9"
-                        android:layout_margin="8dp">
+                        android:layout_margin="16dp">
                     <Spinner
                             android:id="@+id/spinner"
-                            android:spinnerMode="dialog"
+                            android:spinnerMode="dropdown"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:fontFamily="@font/baloo_regular"
                             android:layout_width="150dp"
                             android:layout_height="match_parent"
                             android:popupBackground="@color/colorPrimary"
@@ -116,40 +113,29 @@
                     />
                 </android.support.v7.widget.CardView>
                 <Button
-                        android:id="@+id/BtnSave"
+                    android:id="@+id/BtnSave"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/baloo_regular"
+                    android:layout_width="279dp"
+                    android:layout_height="40dp"
+                    android:onClick="addMember"
+                    android:textColor="@color/colorPrimary"
+                    android:background="@color/colorPrimaryDark"
+                    android:layout_marginTop="24dp"
+                    android:text="Save"/>
+                <Button
+                        android:id="@+id/btnBack"
                         android:layout_gravity="center"
-                        android:fontFamily="serif"
+                        android:fontFamily="@font/baloo_regular"
                         android:layout_width="279dp"
                         android:layout_height="40dp"
-                        android:onClick="addMember"
-                        android:textColor="@color/colorAccent"
+                        android:onClick="back"
+                        android:textColor="@color/colorPrimary"
                         android:background="@color/colorPrimaryDark"
-                        android:layout_margin="16dp"
-                        android:text="Save"/>
+                        android:layout_marginTop="24dp"
+                        android:text="Back"/>
 
             </LinearLayout>
-            <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="2dp"
-                    android:background="@color/colorPrimary"/>
-            <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="#000"
-                    android:textSize="20sp"
-                    android:fontFamily="serif"
-                    android:text="@string/people"
-                    android:gravity="center"/>
-            <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="2dp"
-                    android:background="@color/colorPrimary"/>
-
-            <android.support.v7.widget.RecyclerView
-                    android:id="@+id/lv"
-                    android:layout_width="wrap_content"
-                    android:saveEnabled="true"
-                    android:layout_height="416dp"/>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
