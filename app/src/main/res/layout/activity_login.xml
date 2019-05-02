@@ -43,14 +43,14 @@
         <EditText
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="@string/username"
+                android:hint="@string/email"
                 android:gravity="center"
                 android:textColorHint="@color/colorPrimaryDark"
                 android:textColor="@color/colorPrimaryDark"
                 android:fontFamily="@font/baloo_regular"
                 android:inputType="textVisiblePassword"
                 android:drawableStart="@drawable/username"
-                android:id="@+id/editText"/>
+                android:id="@+id/et_email"/>
     </android.support.design.widget.TextInputLayout>
     <android.support.design.widget.TextInputLayout
             android:layout_width="279dp"

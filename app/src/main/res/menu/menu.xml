@@ -4,6 +4,10 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:color="@color/colorAccent">
     <item
+        android:id="@+id/displayName"
+        app:showAsAction="always"
+        android:title=""/>
+    <item
             android:id="@+id/home"
             android:icon="@drawable/home_white"
             app:showAsAction="always"
@@ -11,11 +15,11 @@
     <item
             android:id="@+id/account"
             android:icon="@drawable/account_white"
-            app:showAsAction="always"
+            app:showAsAction="ifRoom"
             android:title="@string/account"/>
     <item
             android:id="@+id/logout"
             android:icon="@drawable/logout_white"
-            app:showAsAction="always"
+            app:showAsAction="ifRoom"
             android:title="@string/log_out"/>
 </menu>

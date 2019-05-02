@@ -5,7 +5,7 @@ import com.example.wafflesale.domain.*
 
 fun main(){
     var myDBAdapter : MyDBAdapter? = null
-    myDBAdapter?.addClient("","","","","","")
+    myDBAdapter?.addClient("","","","","","", "")
 
     myDBAdapter?.findAllClients()
     println(myDBAdapter?.findAllClients()?.size)

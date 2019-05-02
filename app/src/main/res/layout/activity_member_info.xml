@@ -38,14 +38,23 @@
             android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/login_button"
             app:layout_constraintVertical_bias="0.04"/>
     <ImageView
-            android:layout_width="100dp"
+            android:layout_width="0dp"
             android:layout_height="132dp"
             android:id="@+id/imageInfo"
             android:src="@drawable/avatars"
             android:layout_marginTop="36dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="63dp" android:layout_marginEnd="63dp"
-            app:layout_constraintHorizontal_bias="0.497"/>
-
+            android:layout_marginStart="155dp" android:layout_marginEnd="40dp"
+            app:layout_constraintHorizontal_bias="0.497" android:layout_marginLeft="155dp"
+            app:layout_constraintEnd_toStartOf="@+id/deleteButton" android:layout_marginRight="40dp"/>
+    <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorWarning"
+            android:clickable="true" app:srcCompat="@drawable/garbage" tools:layout_editor_absoluteY="43dp"
+            tools:layout_editor_absoluteX="295dp" android:id="@+id/deleteButton"
+            android:layout_marginTop="43dp" app:layout_constraintStart_toEndOf="@+id/imageInfo"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginEnd="60dp" android:layout_marginRight="60dp"/>
 </android.support.constraint.ConstraintLayout>

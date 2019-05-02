@@ -31,7 +31,7 @@
         <b>Total:</b>
     </string>
     <string name="bestelformulier">
-        <b>Order form for client: </b>
+        <b>Order form for client:</b>
     </string>
     <string name="add_member">
         <b>Add Person</b>
@@ -75,6 +75,11 @@
     <string name="orders">
         <b>Orders</b>
     </string>
+    <string name="phoneNumberHint">
+        <b>phonenumber</b>
+    </string>
+    <string name="register">Register</string>
+    <string name="email">email</string>
 
     <string-array name="avatars">
         <item>

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "873106616104",
+    "firebase_url": "https://wafflesale.firebaseio.com",
+    "project_id": "wafflesale",
+    "storage_bucket": "wafflesale.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:873106616104:android:648a5a53b396b010",
+        "android_client_info": {
+          "package_name": "com.example.wafflesale"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "873106616104-37qrtsndb5scluba6io4lqberlur0sfe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.wafflesale",
+            "certificate_hash": "e6f4d42564c2307c0bc84a511d11445981de55a9"
+          }
+        },
+        {
+          "client_id": "873106616104-9s989u56o5i3c0o5va8f0qg3m0fug3mt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDptFUcdy9HwozKzSIN1PIGP2uMZZeTYdc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "873106616104-9s989u56o5i3c0o5va8f0qg3m0fug3mt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -9,7 +9,7 @@
         android:textColor="@color/colorPrimaryDark"
         android:orientation="vertical"
         android:fontFamily="@font/baloo_regular"
-        tools:context=".NewOrderActivity">
+        tools:context=".activities.NewOrderActivity">
     <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

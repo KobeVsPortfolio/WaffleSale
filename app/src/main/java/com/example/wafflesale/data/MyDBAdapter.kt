@@ -23,15 +23,16 @@ class MyDBAdapter(_context: Context) {
         mSqLiteDatabase = mDbHelper?.writableDatabase
     }
 
-    fun addMember(firstName: String, lastName: String, image: Int) {
+    fun addMember(firstName: String, lastName: String, image: Int, email: String) {
         val contentValues = ContentValues()
         contentValues.put("firstName", firstName)
         contentValues.put("lastName", lastName)
         contentValues.put("image", image)
+        contentValues.put("email", email)
         mSqLiteDatabase?.insert("members", null, contentValues)
     }
 
-    fun addClient(firstName: String, lastName: String, street: String, number: String, city: String, postCode: String) {
+    fun addClient(firstName: String, lastName: String, street: String, number: String, city: String, postCode: String, phoneNumber: String) {
         val contentValues = ContentValues()
             contentValues.put("firstName", firstName)
             contentValues.put("lastName", lastName)
@@ -39,6 +40,7 @@ class MyDBAdapter(_context: Context) {
             contentValues.put("number", number)
             contentValues.put("city", city)
             contentValues.put("postCode", postCode)
+            contentValues.put("phoneNumber", phoneNumber)
             mSqLiteDatabase?.insert("clients", null, contentValues)
     }
 
@@ -57,6 +59,32 @@ class MyDBAdapter(_context: Context) {
         mSqLiteDatabase?.insert("order_lines", null, contentValues)
     }
 
+    fun findAllEmails(): ArrayList<String?> {
+        var allMembers : ArrayList<Member> = findAllMembers()
+        var allEmails : ArrayList<String?> = arrayListOf()
+        allMembers.forEach { m -> allEmails.add(m.email) }
+        return allEmails
+    }
+
+    fun findMemberByEmail(email: String): Member{
+        var email = email.toLowerCase()
+        var member = Member()
+        var cursor: Cursor = mSqLiteDatabase?.query(
+            "members", null, "email = '$email'",
+            null, null, null, null
+        )!!
+        if (cursor.moveToFirst()) {
+            do {
+                member.id = cursor.getInt(0)
+                member.firstName = cursor.getString(1)
+                member.lastName = cursor.getString(2)
+                member.imageUrl = cursor.getInt(3)
+                member.email = cursor.getString(4)
+            } while (cursor.moveToNext())
+        }
+        return member
+    }
+
     fun findAllMembers(): ArrayList<Member> {
         var allMembers: ArrayList<Member> = ArrayList()
         var cursor: Cursor = mSqLiteDatabase?.query(
@@ -70,6 +98,7 @@ class MyDBAdapter(_context: Context) {
                 member.firstName = cursor.getString(1)
                 member.lastName = cursor.getString(2)
                 member.imageUrl = cursor.getInt(3)
+                member.email = cursor.getString(4)
                 allMembers.add(member)
             } while (cursor.moveToNext())
         }
@@ -92,10 +121,32 @@ class MyDBAdapter(_context: Context) {
                     client.number = cursor.getString(4)
                     client.city = cursor.getString(5)
                     client.postCode = cursor.getString(6)
+                    client.phoneNumber = cursor.getString(7)
                     allClients.add(client)
                 } while (cursor.moveToNext())
             }
         return allClients
+    }
+
+    fun findClientById(id: Int): Client {
+        var client = Client()
+        var cursor: Cursor = mSqLiteDatabase?.query(
+            "clients", null, "id = $id",
+            null, null, null, null
+        )!!
+        if (cursor.moveToFirst()) {
+            do {
+                client.id = cursor.getInt(0)
+                client.firstName = cursor.getString(1)
+                client.lastName = cursor.getString(2)
+                client.street = cursor.getString(3)
+                client.number = cursor.getString(4)
+                client.city = cursor.getString(5)
+                client.postCode = cursor.getString(6)
+                client.phoneNumber = cursor.getString(7)
+            } while (cursor.moveToNext())
+        }
+        return client
     }
 
     fun findAllOrders(): ArrayList<Order> {
@@ -116,10 +167,42 @@ class MyDBAdapter(_context: Context) {
         return allOrders
     }
 
+    fun findLastOrder(): Order{
+        var lastOrder = Order()
+        var cursor: Cursor = mSqLiteDatabase?.query(
+            "orders", null, null,
+            null, null, null, null
+        )!!
+        if (cursor.moveToLast()) {
+            lastOrder.id = cursor.getInt(0)
+            lastOrder.memberId = cursor.getInt(1)
+            lastOrder.clientId = cursor.getInt(2)
+        }
+        return lastOrder
+    }
+
+    fun findAllOrdersByMember(id: Int): ArrayList<Order> {
+        var allOrders: ArrayList<Order> = ArrayList()
+        var cursor: Cursor = mSqLiteDatabase?.query(
+            "orders", null, "memberId = $id",
+            null, null, null, null
+        )!!
+        if (cursor.moveToFirst()) {
+            do {
+                var order = Order()
+                order.id = cursor.getInt(0)
+                order.memberId = cursor.getInt(1)
+                order.clientId = cursor.getInt(2)
+                allOrders.add(order)
+            } while (cursor.moveToNext())
+        }
+        return allOrders
+    }
+
     fun findAllOrderLinesByOrder(id: Int): ArrayList<OrderLine> {
         var allOrderLines: ArrayList<OrderLine> = ArrayList()
         var cursor: Cursor = mSqLiteDatabase?.query(
-            "orderLines", null, "orderId = $id",
+            "order_lines", null, "orderId = $id",
             null, null, null, null
         )!!
         if (cursor.moveToFirst()) {
@@ -180,9 +263,9 @@ class MyDBAdapter(_context: Context) {
     ) : SQLiteOpenHelper(context, name, factory, version) {
         override fun onCreate(db: SQLiteDatabase?) {
             val queryMembers =
-                "CREATE TABLE members(id integer primary key autoincrement, firstName text, lastName text, image integer);"
+                "CREATE TABLE members(id integer primary key autoincrement, firstName text, lastName text, image integer, email text);"
             val queryClients =
-                "CREATE TABLE clients(id integer primary key autoincrement, firstName text, lastName text, street text, number, text, city text, postCode text);"
+                "CREATE TABLE clients(id integer primary key autoincrement, firstName text, lastName text, street text, number text, city text, postCode text, phoneNumber text);"
             val queryOrders =
                 "CREATE TABLE orders(id integer primary key autoincrement, memberId integer, clientId integer, FOREIGN KEY(memberId) REFERENCES members(id), FOREIGN KEY(clientId) REFERENCES clients(id));"
             val queryOrderLines =
@@ -204,6 +287,5 @@ class MyDBAdapter(_context: Context) {
             db?.execSQL(dropOrderLines)
             onCreate(db)
         }
-
     }
 }

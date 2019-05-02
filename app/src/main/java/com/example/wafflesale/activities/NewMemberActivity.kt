@@ -1,4 +1,4 @@
-package com.example.wafflesale
+package com.example.wafflesale.activities
 
 import android.content.Intent
 import android.content.res.TypedArray
@@ -8,20 +8,26 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import com.example.wafflesale.R
 import com.example.wafflesale.data.MyDBAdapter
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_new_member.*
 
 
 class NewMemberActivity : AppCompatActivity() {
 
+    private lateinit var auth: FirebaseAuth
+
     var firstName = ""
     var lastName = ""
     var currentImage: Int = 0
+    var email = ""
     private var myDBAdapter: MyDBAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_member)
+        auth = FirebaseAuth.getInstance()
 
         initializeDatabase()
 
@@ -42,6 +48,15 @@ class NewMemberActivity : AppCompatActivity() {
         }
     }
 
+    public override fun onStart() {
+        super.onStart()
+        val currentUser = auth.currentUser
+        if(currentUser == null){
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
     private fun initializeDatabase(){
         myDBAdapter = MyDBAdapter(this@NewMemberActivity)
         myDBAdapter?.open()
@@ -50,17 +65,19 @@ class NewMemberActivity : AppCompatActivity() {
     fun addMember(v: View) {
             firstName = inputFirstName.text.toString()
             lastName = inputLastName.text.toString()
+            email = inputEmail.text.toString().toLowerCase()
 
-        if (!firstName.isBlank() && !lastName.isBlank()) {
-            myDBAdapter?.addMember(firstName, lastName, currentImage)
+        if (!firstName.isBlank() && !lastName.isBlank() && !email.isBlank()) {
+            myDBAdapter?.addMember(firstName, lastName, currentImage, email)
 
-            Toast.makeText(this, "$firstName $lastName was added successfully.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "$firstName $lastName with email: ${email} was added successfully.", Toast.LENGTH_SHORT).show()
 
             inputFirstName.text = null
             inputLastName.text = null
+            inputEmail.text = null
 
         }else{
-            Toast.makeText(this, "Please fill in a first name and last name.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Please fill in your full name and email.", Toast.LENGTH_SHORT).show()
         }
     }
     fun back(v: View) {
@@ -70,6 +87,7 @@ class NewMemberActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
+        menu.findItem(R.id.displayName).title = auth.currentUser?.displayName.toString()
         return true
     }
 
@@ -85,8 +103,9 @@ class NewMemberActivity : AppCompatActivity() {
             return true
         }
         if (id == R.id.logout) {
-            Toast.makeText(this, "This hasn't been made yet.", Toast.LENGTH_LONG).show()
-            return true
+            auth.signOut()
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
         }
         return super.onOptionsItemSelected(item)
     }

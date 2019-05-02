@@ -5,6 +5,7 @@ class Client ():Person() {
     override var firstName: String? = null
     override var lastName:String? = null
     var orders:List<Order>? = ArrayList()
+    var phoneNumber:String? = null
     var city:String? = null
     var street: String? = null
     var number: String? = null

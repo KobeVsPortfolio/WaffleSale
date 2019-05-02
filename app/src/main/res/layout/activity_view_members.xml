@@ -7,7 +7,7 @@
         android:orientation="vertical"
         android:background="@color/colorAccent"
         android:layout_height="match_parent"
-        tools:context=".ViewMembersActivity">
+        tools:context=".activities.ViewMembersActivity">
 
     <View
             android:layout_width="fill_parent"

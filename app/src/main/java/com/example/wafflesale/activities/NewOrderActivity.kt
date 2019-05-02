@@ -1,8 +1,7 @@
-package com.example.wafflesale
+package com.example.wafflesale.activities
 
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.res.TypedArray
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
@@ -12,14 +11,19 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import android.graphics.Typeface
+import android.net.Uri
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import com.example.wafflesale.R
 import com.example.wafflesale.data.MyDBAdapter
-import com.example.wafflesale.domain.Client
+import com.example.wafflesale.domain.*
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_new_order.*
 
 
 class NewOrderActivity : AppCompatActivity() {
+
+    private lateinit var auth: FirebaseAuth
 
     var totalChocoPrice: Float? = 0f
     var totalVanillePrice: Float? = 0f
@@ -28,12 +32,14 @@ class NewOrderActivity : AppCompatActivity() {
     var totalPrice: Float? = 0f
 
     var currentClient : Client? = null
+    var currentOrder : Order? = null
 
     private var myDBAdapter: MyDBAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_order)
+        auth = FirebaseAuth.getInstance()
         initializeDatabase()
 
         var clientList: ArrayList<Client> = myDBAdapter?.findAllClients()!!
@@ -148,28 +154,59 @@ class NewOrderActivity : AppCompatActivity() {
         }
     }
 
+    public override fun onStart() {
+        super.onStart()
+        val currentUser = auth.currentUser
+        if(currentUser == null){
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
     private fun initializeDatabase(){
         myDBAdapter = MyDBAdapter(this@NewOrderActivity)
         myDBAdapter?.open()
     }
 
     fun order(v: View){
+        var currentMember : Member = myDBAdapter?.findMemberByEmail(auth.currentUser?.email!!)!!
         if(currentClient != null) {
             val orderAlert = AlertDialog.Builder(this)
-            orderAlert.setTitle("Order")
+            var chocoAmount :Int? = (totalChocoPrice?.div(6))?.toInt()
+            var vanilleAmount: Int? = (totalVanillePrice?.div(6))?.toInt()
+            var carreAmount : Int? = (totalCarrePrice?.div(6))?.toInt()
+            var mixAmount : Int? = (totalMixPrice?.div(7))?.toInt()
+            orderAlert.setTitle("Order for ${currentClient!!.firstName}: ")
             orderAlert.setMessage(
-                "Order for ${currentClient!!.firstName}: " +
-                        "\n${(totalChocoPrice?.div(6))?.toInt().toString()} Choco Waffles for €${totalChocoPrice?.toInt().toString()}" +
-                        "\n${(totalVanillePrice?.div(6))?.toInt().toString()} Vanille Waffles for €${totalVanillePrice?.toInt().toString()}" +
-                        "\n${(totalCarrePrice?.div(6))?.toInt().toString()} Carré Confitures for €${totalCarrePrice?.toInt().toString()}" +
-                        "\n${(totalMixPrice?.div(7))?.toInt().toString()} Mix's for €${totalMixPrice?.toInt().toString()}" +
+                        "\n${chocoAmount.toString()} Choco Waffles for €${totalChocoPrice?.toInt().toString()}" +
+                        "\n${vanilleAmount.toString()} Vanille Waffles for €${totalVanillePrice?.toInt().toString()}" +
+                        "\n${carreAmount.toString()} Carré Confitures for €${totalCarrePrice?.toInt().toString()}" +
+                        "\n${mixAmount.toString()} Mix's for €${totalMixPrice?.toInt().toString()}" +
                         "\nTotal: €${totalPrice?.toInt().toString()}"
             )
 
             orderAlert.setPositiveButton("Confirm Order") { dialogInterface: DialogInterface, i: Int ->
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-                Toast.makeText(applicationContext, "Thank you for ordering!", Toast.LENGTH_LONG).show()
+                myDBAdapter?.addOrder(currentMember.id!!, currentClient!!.id!!)
+                currentOrder = myDBAdapter?.findLastOrder()
+                if(currentOrder?.memberId == currentMember.id && currentOrder?.clientId == currentClient!!.id) {
+                    if (chocoAmount != null) {
+                        myDBAdapter?.addOrderLine(currentOrder?.id!!, Product.CHOCO_WAFFLE, chocoAmount)
+                    }
+                    if (vanilleAmount != null) {
+                        myDBAdapter?.addOrderLine(currentOrder?.id!!, Product.VANILLE_WAFFLE, vanilleAmount)
+                    }
+                    if (carreAmount != null) {
+                        myDBAdapter?.addOrderLine(currentOrder?.id!!, Product.SQUAREJAM, carreAmount)
+                    }
+                    if (mixAmount != null) {
+                        myDBAdapter?.addOrderLine(currentOrder?.id!!, Product.MIX, mixAmount)
+                    }
+                    Toast.makeText(applicationContext, "Thank you for ordering!", Toast.LENGTH_LONG).show()
+                    val intent = Intent(this, LoginActivity::class.java)
+                    startActivity(intent)
+                }else{
+                    Toast.makeText(applicationContext, "Something went wrong while ordering.", Toast.LENGTH_LONG).show()
+                }
             }
             orderAlert.setNegativeButton("Cancel Order") { dialogInterface: DialogInterface, i: Int ->
                 Toast.makeText(applicationContext, "Order cancelled.", Toast.LENGTH_LONG).show()
@@ -190,6 +227,7 @@ class NewOrderActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
+        menu.findItem(R.id.displayName).title = auth.currentUser?.displayName.toString()
         return true
     }
 
@@ -205,8 +243,9 @@ class NewOrderActivity : AppCompatActivity() {
             return true
         }
         if (id == R.id.logout) {
-            Toast.makeText(this, "This hasn't been made yet.", Toast.LENGTH_LONG).show()
-            return true
+            auth.signOut()
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
         }
         return super.onOptionsItemSelected(item)
     }
