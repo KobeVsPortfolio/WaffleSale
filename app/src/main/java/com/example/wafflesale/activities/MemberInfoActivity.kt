@@ -15,22 +15,26 @@ import android.widget.Toast
 import com.example.wafflesale.R
 import com.example.wafflesale.data.MyDBAdapter
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_member_info.*
 
 class MemberInfoActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
     private var myDBAdapter: MyDBAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_member_info)
         auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
         initializeDatabase()
 
         var id : Int = intent.getIntExtra("id", 0)
         var firstName = intent.getStringExtra("firstName")
         var lastName = intent.getStringExtra("lastName")
+        var email = intent.getStringExtra("email")
         imageInfo.setImageResource(intent.getIntExtra("image", 0))
         fullNameInfo.text = "$firstName $lastName"
 
@@ -43,6 +47,8 @@ class MemberInfoActivity : AppCompatActivity() {
 
                 deleteAlert.setPositiveButton("Delete") { dialogInterface: DialogInterface, i: Int ->
                     myDBAdapter?.deleteMemberById(id)
+                    db.collection("members").document(email)
+                        .delete()
                     val intent = Intent(this, ViewMembersActivity::class.java)
                     startActivity(intent)
                     Toast.makeText(applicationContext, "$firstName $lastName has been deleted.", Toast.LENGTH_LONG).show()
@@ -87,10 +93,6 @@ class MemberInfoActivity : AppCompatActivity() {
         if (id == R.id.home) {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
-        }
-        if (id == R.id.account) {
-            Toast.makeText(this, "This hasn't been made yet.", Toast.LENGTH_LONG).show()
-            return true
         }
         if (id == R.id.logout) {
             auth.signOut()

@@ -23,7 +23,7 @@ class MyDBAdapter(_context: Context) {
         mSqLiteDatabase = mDbHelper?.writableDatabase
     }
 
-    fun addMember(firstName: String, lastName: String, image: Int, email: String) {
+    fun addMember(firstName: String?, lastName: String?, image: Int?, email: String) {
         val contentValues = ContentValues()
         contentValues.put("firstName", firstName)
         contentValues.put("lastName", lastName)
@@ -44,10 +44,12 @@ class MyDBAdapter(_context: Context) {
             mSqLiteDatabase?.insert("clients", null, contentValues)
     }
 
-    fun addOrder(memberId: Int, clientId: Int) {
+    fun addOrder(memberId: Int, clientId: Int, clientPhone: String, memberEmail: String) {
         val contentValues = ContentValues()
         contentValues.put("memberId", memberId)
         contentValues.put("clientId", clientId)
+        contentValues.put("clientPhone", clientPhone)
+        contentValues.put("memberEmail", memberEmail)
         mSqLiteDatabase?.insert("orders", null, contentValues)
     }
 
@@ -149,6 +151,27 @@ class MyDBAdapter(_context: Context) {
         return client
     }
 
+    fun findClientByPhone(phoneNumber: String): Client {
+        var client = Client()
+        var cursor: Cursor = mSqLiteDatabase?.query(
+            "clients", null, "phoneNumber = '$phoneNumber'",
+            null, null, null, null
+        )!!
+        if (cursor.moveToFirst()) {
+            do {
+                client.id = cursor.getInt(0)
+                client.firstName = cursor.getString(1)
+                client.lastName = cursor.getString(2)
+                client.street = cursor.getString(3)
+                client.number = cursor.getString(4)
+                client.city = cursor.getString(5)
+                client.postCode = cursor.getString(6)
+                client.phoneNumber = cursor.getString(7)
+            } while (cursor.moveToNext())
+        }
+        return client
+    }
+
     fun findAllOrders(): ArrayList<Order> {
         var allOrders: ArrayList<Order> = ArrayList()
         var cursor: Cursor = mSqLiteDatabase?.query(
@@ -161,6 +184,8 @@ class MyDBAdapter(_context: Context) {
                 order.id = cursor.getInt(0)
                 order.memberId = cursor.getInt(1)
                 order.clientId = cursor.getInt(2)
+                order.clientPhone = cursor.getString(3)
+                order.memberEmail = cursor.getString(4)
                 allOrders.add(order)
             } while (cursor.moveToNext())
         }
@@ -177,14 +202,16 @@ class MyDBAdapter(_context: Context) {
             lastOrder.id = cursor.getInt(0)
             lastOrder.memberId = cursor.getInt(1)
             lastOrder.clientId = cursor.getInt(2)
+            lastOrder.clientPhone = cursor.getString(3)
+            lastOrder.memberEmail = cursor.getString(4)
         }
         return lastOrder
     }
 
-    fun findAllOrdersByMember(id: Int): ArrayList<Order> {
-        var allOrders: ArrayList<Order> = ArrayList()
+    fun findAllOrdersByMember(email: String): ArrayList<Order?>? {
+        var allOrders: ArrayList<Order?> = ArrayList()
         var cursor: Cursor = mSqLiteDatabase?.query(
-            "orders", null, "memberId = $id",
+            "orders", null, "memberEmail = '$email'",
             null, null, null, null
         )!!
         if (cursor.moveToFirst()) {
@@ -193,6 +220,8 @@ class MyDBAdapter(_context: Context) {
                 order.id = cursor.getInt(0)
                 order.memberId = cursor.getInt(1)
                 order.clientId = cursor.getInt(2)
+                order.clientPhone = cursor.getString(3)
+                order.memberEmail = cursor.getString(4)
                 allOrders.add(order)
             } while (cursor.moveToNext())
         }
@@ -249,7 +278,10 @@ class MyDBAdapter(_context: Context) {
     }
 
     fun deleteOrderLinesOfOrder(id : Int) {
-        mSqLiteDatabase?.delete("orderLines", "orderId = $id", null)
+        mSqLiteDatabase?.delete("order_lines", "orderId = $id", null)
+    }
+    fun deleteOrderLines(){
+        mSqLiteDatabase?.delete("order_lines", null, null)
     }
 
     fun dropTables() {
@@ -267,7 +299,7 @@ class MyDBAdapter(_context: Context) {
             val queryClients =
                 "CREATE TABLE clients(id integer primary key autoincrement, firstName text, lastName text, street text, number text, city text, postCode text, phoneNumber text);"
             val queryOrders =
-                "CREATE TABLE orders(id integer primary key autoincrement, memberId integer, clientId integer, FOREIGN KEY(memberId) REFERENCES members(id), FOREIGN KEY(clientId) REFERENCES clients(id));"
+                "CREATE TABLE orders(id integer primary key autoincrement, memberId integer, clientId integer, clientPhone text, memberEmail text, FOREIGN KEY(memberId) REFERENCES members(id), FOREIGN KEY(clientId) REFERENCES clients(id));"
             val queryOrderLines =
                 "CREATE TABLE order_lines(id integer primary key autoincrement, orderId int, product text, amount integer, FOREIGN KEY(orderId) REFERENCES orders(id));"
             db?.execSQL(queryMembers)

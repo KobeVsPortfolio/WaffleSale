@@ -3,7 +3,9 @@ package com.example.wafflesale.domain
 class Order() {
     var id : Int? = null
     var clientId : Int? = null
+    var clientPhone: String? = null
     var memberId : Int? = null
+    var memberEmail: String? = null
     var orderList: MutableList<OrderLine> = mutableListOf()
 
     fun addOrderLine(orderLine: OrderLine){

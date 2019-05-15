@@ -18,12 +18,14 @@ import com.example.wafflesale.R
 import com.example.wafflesale.data.MyDBAdapter
 import com.example.wafflesale.domain.*
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_new_order.*
 
 
 class NewOrderActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
 
     var totalChocoPrice: Float? = 0f
     var totalVanillePrice: Float? = 0f
@@ -31,8 +33,11 @@ class NewOrderActivity : AppCompatActivity() {
     var totalMixPrice: Float? = 0f
     var totalPrice: Float? = 0f
 
-    var currentClient : Client? = null
-    var currentOrder : Order? = null
+    var currentClient: Client? = null
+    var currentOrder: Order? = null
+
+    var clientList: ArrayList<Client> = arrayListOf()
+    var stringList: ArrayList<String> = arrayListOf()
 
     private var myDBAdapter: MyDBAdapter? = null
 
@@ -40,13 +45,14 @@ class NewOrderActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_order)
         auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
         initializeDatabase()
 
-        var clientList: ArrayList<Client> = myDBAdapter?.findAllClients()!!
-        var stringList: ArrayList<String> = arrayListOf("Please choose a client")
-            clientList.forEach { c -> stringList.add("${c.firstName} ${c.lastName}")}
+        clientList = myDBAdapter?.findAllClients()!!
+        stringList = arrayListOf("Please choose a client")
+        clientList.forEach { c -> stringList.add("${c.firstName} ${c.lastName}: ${c.phoneNumber}") }
 
-        var spinnerAdapter = ArrayAdapter<String>(this, R.layout.spinner_item, stringList)
+        val spinnerAdapter = ArrayAdapter<String>(this, R.layout.spinner_item, stringList)
         spinnerAdapter.setDropDownViewResource(R.layout.spinner_item)
 
         searchableSpinner.adapter = spinnerAdapter
@@ -57,9 +63,9 @@ class NewOrderActivity : AppCompatActivity() {
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                if(searchableSpinner.selectedItemPosition != 0) {
+                if (searchableSpinner.selectedItemPosition != 0) {
                     currentClient = clientList.get(searchableSpinner.selectedItemPosition - 1)
-                }else{
+                } else {
                     currentClient = null
                     Toast.makeText(this@NewOrderActivity, "Please choose a client.", Toast.LENGTH_SHORT).show()
                 }
@@ -67,9 +73,9 @@ class NewOrderActivity : AppCompatActivity() {
         }
 
         cb_choco.setOnClickListener {
-            if(cb_choco.isChecked){
+            if (cb_choco.isChecked) {
                 numberChoco.maxValue = 10
-            }else{
+            } else {
                 numberChoco.maxValue = 0
                 totalPrice = totalPrice?.minus(totalChocoPrice!!)
                 total.text = totalPrice.toString()
@@ -79,9 +85,9 @@ class NewOrderActivity : AppCompatActivity() {
         }
 
         cb_vanille.setOnClickListener {
-            if(cb_vanille.isChecked){
+            if (cb_vanille.isChecked) {
                 numberVanille.maxValue = 10
-            }else{
+            } else {
                 numberVanille.maxValue = 0
                 totalPrice = totalPrice?.minus(totalVanillePrice!!)
                 total.text = totalPrice.toString()
@@ -90,9 +96,9 @@ class NewOrderActivity : AppCompatActivity() {
             }
         }
         cb_carre.setOnClickListener {
-            if(cb_carre.isChecked){
+            if (cb_carre.isChecked) {
                 numberCarre.maxValue = 10
-            }else{
+            } else {
                 numberCarre.maxValue = 0
                 totalPrice = totalPrice?.minus(totalCarrePrice!!)
                 total.text = totalPrice.toString()
@@ -102,9 +108,9 @@ class NewOrderActivity : AppCompatActivity() {
         }
 
         cb_mix.setOnClickListener {
-            if(cb_mix.isChecked){
+            if (cb_mix.isChecked) {
                 numberMix.maxValue = 10
-            }else{
+            } else {
                 numberMix.maxValue = 0
                 totalPrice = totalPrice?.minus(totalMixPrice!!)
                 total.text = totalPrice.toString()
@@ -157,71 +163,123 @@ class NewOrderActivity : AppCompatActivity() {
     public override fun onStart() {
         super.onStart()
         val currentUser = auth.currentUser
-        if(currentUser == null){
+        if (currentUser == null) {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
     }
 
-    private fun initializeDatabase(){
+    private fun initializeDatabase() {
         myDBAdapter = MyDBAdapter(this@NewOrderActivity)
         myDBAdapter?.open()
     }
 
-    fun order(v: View){
-        var currentMember : Member = myDBAdapter?.findMemberByEmail(auth.currentUser?.email!!)!!
-        if(currentClient != null) {
-            val orderAlert = AlertDialog.Builder(this)
-            var chocoAmount :Int? = (totalChocoPrice?.div(6))?.toInt()
-            var vanilleAmount: Int? = (totalVanillePrice?.div(6))?.toInt()
-            var carreAmount : Int? = (totalCarrePrice?.div(6))?.toInt()
-            var mixAmount : Int? = (totalMixPrice?.div(7))?.toInt()
-            orderAlert.setTitle("Order for ${currentClient!!.firstName}: ")
-            orderAlert.setMessage(
-                        "\n${chocoAmount.toString()} Choco Waffles for €${totalChocoPrice?.toInt().toString()}" +
-                        "\n${vanilleAmount.toString()} Vanille Waffles for €${totalVanillePrice?.toInt().toString()}" +
-                        "\n${carreAmount.toString()} Carré Confitures for €${totalCarrePrice?.toInt().toString()}" +
-                        "\n${mixAmount.toString()} Mix's for €${totalMixPrice?.toInt().toString()}" +
-                        "\nTotal: €${totalPrice?.toInt().toString()}"
-            )
+    fun order(v: View) {
+        var currentMember: Member = myDBAdapter?.findMemberByEmail(auth.currentUser?.email!!)!!
+        if (currentMember.id != null) {
+            if (currentClient != null) {
+                val orderAlert = AlertDialog.Builder(this)
+                var chocoAmount: Int? = (totalChocoPrice?.div(6))?.toInt()
+                var vanilleAmount: Int? = (totalVanillePrice?.div(6))?.toInt()
+                var carreAmount: Int? = (totalCarrePrice?.div(6))?.toInt()
+                var mixAmount: Int? = (totalMixPrice?.div(7))?.toInt()
+                orderAlert.setTitle("Order for ${currentClient!!.firstName}: ")
+                orderAlert.setMessage(
+                    "\n${chocoAmount.toString()} Choco Waffles for €${totalChocoPrice?.toInt().toString()}" +
+                            "\n${vanilleAmount.toString()} Vanille Waffles for €${totalVanillePrice?.toInt().toString()}" +
+                            "\n${carreAmount.toString()} Carré Confitures for €${totalCarrePrice?.toInt().toString()}" +
+                            "\n${mixAmount.toString()} Mix's for €${totalMixPrice?.toInt().toString()}" +
+                            "\nTotal: €${totalPrice?.toInt().toString()}"
+                )
 
-            orderAlert.setPositiveButton("Confirm Order") { dialogInterface: DialogInterface, i: Int ->
-                myDBAdapter?.addOrder(currentMember.id!!, currentClient!!.id!!)
-                currentOrder = myDBAdapter?.findLastOrder()
-                if(currentOrder?.memberId == currentMember.id && currentOrder?.clientId == currentClient!!.id) {
-                    if (chocoAmount != null) {
-                        myDBAdapter?.addOrderLine(currentOrder?.id!!, Product.CHOCO_WAFFLE, chocoAmount)
+                orderAlert.setPositiveButton("Confirm Order") { dialogInterface: DialogInterface, i: Int ->
+                    myDBAdapter?.addOrder(
+                        currentMember.id!!,
+                        currentClient!!.id!!,
+                        currentClient!!.phoneNumber!!,
+                        currentMember.email!!
+                    )
+                    currentOrder = myDBAdapter?.findLastOrder()
+                    var orderList = arrayListOf<OrderLine>()
+                    if (currentOrder?.memberId == currentMember.id && currentOrder?.clientId == currentClient!!.id) {
+                        if (chocoAmount != null) {
+                            myDBAdapter?.addOrderLine(currentOrder?.id!!, Product.CHOCO_WAFFLE, chocoAmount)
+                            val orderLineChoco = myDBAdapter?.findAllOrderLinesByOrder(currentOrder?.id!!)?.last()
+                            orderList.add(orderLineChoco!!)
+                        }
+                        if (vanilleAmount != null) {
+                            myDBAdapter?.addOrderLine(currentOrder?.id!!, Product.VANILLE_WAFFLE, vanilleAmount)
+                            val orderLineVanille = myDBAdapter?.findAllOrderLinesByOrder(currentOrder?.id!!)?.last()
+                            orderList.add(orderLineVanille!!)
+                        }
+                        if (carreAmount != null) {
+                            myDBAdapter?.addOrderLine(currentOrder?.id!!, Product.SQUAREJAM, carreAmount)
+                            val orderLineCarre = myDBAdapter?.findAllOrderLinesByOrder(currentOrder?.id!!)?.last()
+                            orderList.add(orderLineCarre!!)
+                        }
+                        if (mixAmount != null) {
+                            myDBAdapter?.addOrderLine(currentOrder?.id!!, Product.MIX, mixAmount)
+                            val orderLineMix = myDBAdapter?.findAllOrderLinesByOrder(currentOrder?.id!!)?.last()
+                            orderList.add(orderLineMix!!)
+                        }
+
+                        val order = Order()
+                        order.memberEmail = currentMember.email
+                        order.clientPhone = currentClient!!.phoneNumber
+                        order.orderList = orderList
+                        db.collection("members/${currentMember.email}/orders")
+                            .document(currentOrder?.id.toString())
+                            .set(order)
+                            .addOnSuccessListener {
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(
+                                    this,
+                                    "${currentOrder?.id} was not added to FireStore/members.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        db.collection("clients/${currentClient!!.phoneNumber}/orders")
+                            .document(currentOrder?.id.toString())
+                            .set(order)
+                            .addOnSuccessListener {
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(
+                                    this,
+                                    "${currentOrder?.id} was not added to FireStore/clients.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        Toast.makeText(applicationContext, "Thank you for ordering!", Toast.LENGTH_LONG).show()
+                        val intent = Intent(this, LoginActivity::class.java)
+                        startActivity(intent)
+                    } else {
+                        Toast.makeText(applicationContext, "Something went wrong while ordering.", Toast.LENGTH_LONG)
+                            .show()
                     }
-                    if (vanilleAmount != null) {
-                        myDBAdapter?.addOrderLine(currentOrder?.id!!, Product.VANILLE_WAFFLE, vanilleAmount)
-                    }
-                    if (carreAmount != null) {
-                        myDBAdapter?.addOrderLine(currentOrder?.id!!, Product.SQUAREJAM, carreAmount)
-                    }
-                    if (mixAmount != null) {
-                        myDBAdapter?.addOrderLine(currentOrder?.id!!, Product.MIX, mixAmount)
-                    }
-                    Toast.makeText(applicationContext, "Thank you for ordering!", Toast.LENGTH_LONG).show()
-                    val intent = Intent(this, LoginActivity::class.java)
-                    startActivity(intent)
-                }else{
-                    Toast.makeText(applicationContext, "Something went wrong while ordering.", Toast.LENGTH_LONG).show()
                 }
-            }
-            orderAlert.setNegativeButton("Cancel Order") { dialogInterface: DialogInterface, i: Int ->
-                Toast.makeText(applicationContext, "Order cancelled.", Toast.LENGTH_LONG).show()
-            }
+                orderAlert.setNegativeButton("Cancel Order") { dialogInterface: DialogInterface, i: Int ->
+                    Toast.makeText(applicationContext, "Order cancelled.", Toast.LENGTH_LONG).show()
+                }
 
-            val alertDialog: AlertDialog = orderAlert.create()
-            alertDialog.show()
+                val alertDialog: AlertDialog = orderAlert.create()
+                alertDialog.show()
 
-            val textView = alertDialog.findViewById<TextView>(android.R.id.message)
-            val typeface = Typeface.createFromAsset(assets, "baloo_regular.ttf")
-            textView?.typeface = typeface
-            textView?.setTextColor(resources.getColor(R.color.colorPrimaryDark))
-            alertDialog.window?.setBackgroundDrawableResource(R.color.colorPrimary)
-        }else{
-            Toast.makeText(this@NewOrderActivity, "No client has been selected.", Toast.LENGTH_SHORT).show()
+                val textView = alertDialog.findViewById<TextView>(android.R.id.message)
+                val typeface = Typeface.createFromAsset(assets, "baloo_regular.ttf")
+                textView?.typeface = typeface
+                textView?.setTextColor(resources.getColor(R.color.colorPrimaryDark))
+                alertDialog.window?.setBackgroundDrawableResource(R.color.colorPrimary)
+            } else {
+                Toast.makeText(this@NewOrderActivity, "No client has been selected.", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Toast.makeText(
+                this@NewOrderActivity,
+                "This is a test-user and is not allowed to place an order.",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -237,10 +295,6 @@ class NewOrderActivity : AppCompatActivity() {
         if (id == R.id.home) {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
-        }
-        if (id == R.id.account) {
-            Toast.makeText(this, "This hasn't been made yet.", Toast.LENGTH_LONG).show()
-            return true
         }
         if (id == R.id.logout) {
             auth.signOut()

@@ -74,7 +74,7 @@ class SignUpActivity : AppCompatActivity() {
             updateUI(user)
         } else {
             Toast.makeText(
-                baseContext, "Signup failed, make sure you use a valid email.",
+                baseContext, "Signup failed, email is invalid or already in use.",
                 Toast.LENGTH_SHORT
             ).show()
             updateUI(null)

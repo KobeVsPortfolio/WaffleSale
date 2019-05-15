@@ -27,6 +27,7 @@ class MemberListAdapter(private val list:ArrayList<Member>?, private val context
             itemView.setOnClickListener{
                 val intent = Intent(context, MemberInfoActivity::class.java)
                 intent.putExtra("id", member.id)
+                intent.putExtra("email", member.email)
                 intent.putExtra("firstName", member.firstName)
                 intent.putExtra("lastName", member.lastName)
                 intent.putExtra("image", member.imageUrl)

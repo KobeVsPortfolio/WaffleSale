@@ -21,7 +21,7 @@ class ViewOrdersActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
 
-    private var orders: ArrayList<Order>? = ArrayList()
+    private var orders: ArrayList<Order?>? = arrayListOf()
     private var adapter: OrderListAdapter? = null
     private var layoutManager: RecyclerView.LayoutManager? = null
     private var myDBAdapter: MyDBAdapter? = null
@@ -40,9 +40,10 @@ class ViewOrdersActivity : AppCompatActivity() {
             startActivity(intent)
             Toast.makeText(this, "Only members can view orders.", Toast.LENGTH_LONG).show()
         }
-
-        orders = myDBAdapter?.findAllOrdersByMember(currentMember.id!!)
-        orders?.forEach { o -> o.orderList = myDBAdapter?.findAllOrderLinesByOrder(o.id!!)!! }
+        if(currentMember.id != null) {
+            orders = myDBAdapter?.findAllOrdersByMember(currentMember.email!!)!!
+            orders?.forEach { o -> o!!.orderList = myDBAdapter?.findAllOrderLinesByOrder(o.id!!)!! }
+        }
 
         adapter = OrderListAdapter(orders, this)
         layoutManager = LinearLayoutManager(this)
@@ -79,10 +80,6 @@ class ViewOrdersActivity : AppCompatActivity() {
         if (id == R.id.home) {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
-        }
-        if (id == R.id.account) {
-            Toast.makeText(this, "This hasn't been made yet.", Toast.LENGTH_LONG).show()
-            return true
         }
         if (id == R.id.logout) {
             auth.signOut()

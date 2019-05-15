@@ -14,11 +14,13 @@ import android.widget.Toast
 import com.example.wafflesale.R
 import com.example.wafflesale.data.MyDBAdapter
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_new_client.*
 
 class NewClientActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
 
     private var myDBAdapter: MyDBAdapter? = null
 
@@ -36,6 +38,7 @@ class NewClientActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_client)
         auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
         initializeDatabase()
 
         pickContact.setOnClickListener { view ->
@@ -88,16 +91,38 @@ class NewClientActivity : AppCompatActivity() {
         city = inputCity.text.toString()
         postCode = inputPostCode.text.toString()
         number = inputNumber.text.toString()
-        phoneNumber = inputPhoneNumber.text.toString()
+        phoneNumber = inputPhoneNumber.text.toString().toLowerCase()
 
         if (!firstName.isBlank() && !lastName.isBlank() && !street.isBlank() && !city.isBlank() && !postCode.isBlank() && !number.isBlank() && !phoneNumber.isBlank()) {
+            db.collection("clients").document(phoneNumber).get().addOnSuccessListener { document ->
+                if (!document.exists()) {
+                    myDBAdapter?.addClient(firstName, lastName, street, number, city, postCode, phoneNumber)
 
-            myDBAdapter?.addClient(firstName, lastName, street, number, city, postCode, phoneNumber)
+                    val client = HashMap<String, Any>()
+                    client["firstName"] = firstName
+                    client["lastName"] = lastName
+                    client["street"] = street
+                    client["city"] = city
+                    client["postCode"] = postCode
+                    client["number"] = number
+                    client["phoneNumber"] = phoneNumber
+                    db.collection("clients").document(phoneNumber)
+                        .set(client)
+                        .addOnSuccessListener { documentReference ->
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(this, "$firstName $lastName was not added to FireStore.", Toast.LENGTH_SHORT)
+                                .show()
+                        }
 
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
 
-            Toast.makeText(this, "$firstName $lastName was added successfully.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "$firstName $lastName was added successfully.", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "A client with $phoneNumber already exists.", Toast.LENGTH_SHORT).show()
+                }
+            }
         }else{
             Toast.makeText(this, "Please fill in all the fields.", Toast.LENGTH_SHORT).show()
         }
@@ -123,10 +148,6 @@ class NewClientActivity : AppCompatActivity() {
         if (id == R.id.home) {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
-        }
-        if (id == R.id.account) {
-            Toast.makeText(this, "This hasn't been made yet.", Toast.LENGTH_LONG).show()
-            return true
         }
         if (id == R.id.logout) {
             auth.signOut()

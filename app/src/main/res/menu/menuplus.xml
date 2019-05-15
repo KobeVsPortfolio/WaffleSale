@@ -14,11 +14,6 @@
             app:showAsAction="always"
             android:title="@string/home"/>
     <item
-            android:id="@+id/account"
-            android:icon="@drawable/account_white"
-            app:showAsAction="ifRoom"
-            android:title="@string/account"/>
-    <item
             android:id="@+id/logout"
             android:icon="@drawable/logout_white"
             app:showAsAction="ifRoom"

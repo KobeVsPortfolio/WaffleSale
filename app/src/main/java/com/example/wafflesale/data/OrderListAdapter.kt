@@ -17,22 +17,29 @@ import android.widget.TextView
 import com.example.wafflesale.R
 import com.example.wafflesale.activities.ViewOrdersActivity
 import com.example.wafflesale.domain.Client
+import com.example.wafflesale.domain.Member
 import com.example.wafflesale.domain.Order
 import com.example.wafflesale.domain.OrderLine
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
-class OrderListAdapter(private val list:ArrayList<Order>?, private val context:Context)
+class OrderListAdapter(private val list:ArrayList<Order?>?, private val context:Context)
     : RecyclerView.Adapter<OrderListAdapter.ViewHolder>() {
 
     inner class ViewHolder (itemView : View):RecyclerView.ViewHolder(itemView){
 
         private var myDBAdapter: MyDBAdapter? = null
+        private lateinit var auth: FirebaseAuth
+        private lateinit var db: FirebaseFirestore
 
         fun bindItem(order : Order) {
+            auth = FirebaseAuth.getInstance()
+            db = FirebaseFirestore.getInstance()
             initializeDatabase()
             var clientName: TextView = itemView.findViewById(R.id.tv_clientName) as TextView
             var totalPrice: TextView = itemView.findViewById(R.id.tv_totalPrice) as TextView
             var deleteButton : FloatingActionButton = itemView.findViewById(R.id.deleteOrder) as FloatingActionButton
-            var client = myDBAdapter?.findClientById(order.clientId!!)!!
+            var client = myDBAdapter?.findClientByPhone(order.clientPhone!!)!!
             clientName.text = "${client.firstName} ${client.lastName}"
             totalPrice.text = "€" + order.getTotalOrderPrice().toString()
 
@@ -44,6 +51,11 @@ class OrderListAdapter(private val list:ArrayList<Order>?, private val context:C
                 )
 
                 deleteAlert.setPositiveButton("Delete") { dialogInterface: DialogInterface, i: Int ->
+                    var currentMember : Member = myDBAdapter?.findMemberByEmail(auth.currentUser?.email!!)!!
+                    db.collection("members/${currentMember.email}/orders").document(order.id.toString())
+                        .delete()
+                    db.collection("clients/${client.phoneNumber}/orders").document(order.id.toString())
+                        .delete()
                     myDBAdapter?.deleteOrderById(order.id!!)
                     val intent = Intent(context, ViewOrdersActivity::class.java)
                     context.startActivity(intent)
@@ -110,7 +122,7 @@ class OrderListAdapter(private val list:ArrayList<Order>?, private val context:C
 
     override fun onBindViewHolder(parent: OrderListAdapter.ViewHolder, position: Int) {
         if (list != null) {
-            parent.bindItem(list.get(position))
+            parent.bindItem(list.get(position)!!)
         }
     }
 

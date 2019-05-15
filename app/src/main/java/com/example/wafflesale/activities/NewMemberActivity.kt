@@ -10,13 +10,16 @@ import android.view.View
 import android.widget.*
 import com.example.wafflesale.R
 import com.example.wafflesale.data.MyDBAdapter
+import com.example.wafflesale.domain.Member
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_new_member.*
 
 
 class NewMemberActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
 
     var firstName = ""
     var lastName = ""
@@ -28,6 +31,7 @@ class NewMemberActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_member)
         auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
 
         initializeDatabase()
 
@@ -68,13 +72,35 @@ class NewMemberActivity : AppCompatActivity() {
             email = inputEmail.text.toString().toLowerCase()
 
         if (!firstName.isBlank() && !lastName.isBlank() && !email.isBlank()) {
-            myDBAdapter?.addMember(firstName, lastName, currentImage, email)
+            db.collection("members").document(email).get().addOnSuccessListener { document ->
+                if (!document.exists()) {
+                    myDBAdapter?.addMember(firstName, lastName, currentImage, email)
 
-            Toast.makeText(this, "$firstName $lastName with email: ${email} was added successfully.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this,
+                        "$firstName $lastName with email: ${email} was added successfully.",
+                        Toast.LENGTH_SHORT
+                    ).show()
 
-            inputFirstName.text = null
-            inputLastName.text = null
-            inputEmail.text = null
+                    val member = HashMap<String, Any>()
+                    member["firstName"] = firstName
+                    member["lastName"] = lastName
+                    member["email"] = email
+                    db.collection("members").document(email)
+                        .set(member)
+                        .addOnSuccessListener { documentReference ->
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(this, "$firstName $lastName was not added to FireStore.", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+
+                    val intent = Intent(this, ViewMembersActivity::class.java)
+                    startActivity(intent)
+                } else {
+                    Toast.makeText(this, "A member with $email already exists.", Toast.LENGTH_SHORT).show()
+                }
+            }
 
         }else{
             Toast.makeText(this, "Please fill in your full name and email.", Toast.LENGTH_SHORT).show()
@@ -97,10 +123,6 @@ class NewMemberActivity : AppCompatActivity() {
         if (id == R.id.home) {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
-        }
-        if (id == R.id.account) {
-            Toast.makeText(this, "This hasn't been made yet.", Toast.LENGTH_LONG).show()
-            return true
         }
         if (id == R.id.logout) {
             auth.signOut()

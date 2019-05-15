@@ -68,10 +68,6 @@ class ViewMembersActivity : AppCompatActivity() {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
-        if (id == R.id.account) {
-            Toast.makeText(this, "This hasn't been made yet.", Toast.LENGTH_LONG).show()
-            return true
-        }
         if (id == R.id.logout) {
             auth.signOut()
             val intent = Intent(this, LoginActivity::class.java)
